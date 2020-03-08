@@ -94,7 +94,7 @@ const store = new Vuex.Store({
 				return
 			}
 
-			getDb({
+			return getDb({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
@@ -120,7 +120,7 @@ const store = new Vuex.Store({
 			state,
 			dispatch
 		}, data) {
-			getDb({
+			return getDb({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
@@ -143,7 +143,7 @@ const store = new Vuex.Store({
 		}, data) {
 			delete data.data._id
 
-			getDb({
+			return getDb({
 				type: "update", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
@@ -168,7 +168,7 @@ const store = new Vuex.Store({
 				createAt: formatDate(now),
 				createAt2: now
 			})
-			getDb({
+			return getDb({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKLOG, //指定操作的数据表,
 				hasopenid: hasopenid,
@@ -260,7 +260,7 @@ const store = new Vuex.Store({
 				}, {
 					jingzichan: 0,
 					zongzichan: 0,
-					fuzhai:0
+					fuzhai: 0
 				})
 
 				console.log("新增数据", state.mainData)
@@ -269,6 +269,7 @@ const store = new Vuex.Store({
 
 
 				const now = new Date();
+				console.error(1)
 				await dispatch("ApiInsertHisData", {
 					condition: {
 
@@ -284,6 +285,7 @@ const store = new Vuex.Store({
 						month: formatDate(now, 'MM')
 					})
 				})
+				console.error(2)
 				return await dispatch("ApiInsertMainData", {
 					condition: {},
 					needrefresh: false,
@@ -298,51 +300,53 @@ const store = new Vuex.Store({
 			commit,
 			state
 		}, data) {
-			return new Promise((resolve, reject) => {
-				getDb({
-					type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
-					db: KKDBHIS, //指定操作的数据表,
-					hasopenid: hasopenid,
-					// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
-					condition: data.condition,
-					skip: data.skip,
-					limit: data.limit,
-					data: { //指定insert的数据
-					}
-				}).then(res => {
-					// console.error(res,'get his')
-					return resolve(res);
-				}).catch(error => {
-					console.warn("getDb error", error)
-					return reject(error);
-				})
-
+			// return [44]
+			// return new Promise((resolve, reject) => {
+			return getDb({
+				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+				db: KKDBHIS, //指定操作的数据表,
+				hasopenid: hasopenid,
+				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
+				condition: data.condition,
+				skip: data.skip,
+				limit: data.limit,
+				data: { //指定insert的数据
+				}
+			}).then(res => {
+				// console.error(11111,res,'get his')
+				return res;
+			}).catch(error => {
+				console.warn("getDb error", error)
+				return [];
 			})
 
+			// })
+			// console.error("xxx")
+			// return [677]
 		},
 		async ApiInsertHisData({
 			commit,
 			state
 		}, data) {
-			return new Promise((resolve, reject) => {
-				delete data.data._id
-				Object.assign(data, {
-					createAt: new Date()
-				})
-				getDb({
-					type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
-					db: KKDBHIS, //指定操作的数据表,
-					hasopenid: hasopenid,
-					condition: data.condition,
-					data: data.data
-				}).then(async res => {
-					return true;
-
-				}).catch(error => {
-					console.warn("getDb error", error)
-					return;
-				})
+			// return new Promise((resolve, reject) => {
+			delete data.data._id
+			Object.assign(data, {
+				createAt: new Date()
 			})
+			return getDb({
+				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+				db: KKDBHIS, //指定操作的数据表,
+				hasopenid: hasopenid,
+				condition: data.condition,
+				data: data.data
+			}).then(async res => {
+				return true;
+
+			}).catch(error => {
+				console.warn("getDb error", error)
+				return;
+			})
+			// })
 		}
 	}
 })

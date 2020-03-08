@@ -24,14 +24,14 @@ function getDb({
 
 				if (res.errMsg == "cloud.callFunction:ok" && res.result != null && res.result.errMsg.indexOf("ok") > -1) {
 
-					resolve(res.result.data)
+					return resolve(res.result.data)
 
 				} else {
-					reject('[云函数] [dbhelper] 调用失败 ' + JSON.stringify(res))
+					return reject('[云函数] [dbhelper] 调用失败 ' + JSON.stringify(res))
 				}
 			},
 			fail: err => {
-				reject('[云函数] [dbhelper] 调用失败 ' + JSON.stringify(res))
+				return reject('[云函数] [dbhelper] 调用失败 ' + JSON.stringify(res))
 			}
 		})
 
