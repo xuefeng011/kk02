@@ -1,0 +1,71 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				 "enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/chart/chart",
+			"style": {}
+		}, {
+			"path": "pages/login/login",
+			"style": {}
+		}, {
+			"path": "pages/edit/edit",
+			"style": {}
+		}, {
+			"path": "pages/edit/addaccount",
+			"style": {}
+		}, {
+			"path": "pages/edit/editaccount",
+			"style": {}
+		}
+	    
+    ],
+	"globalStyle": {
+		"mp-alipay": {
+			"component": true,
+			/* 支付宝小程序特有相关 */
+			"transparentTitle": "always",
+			"allowsBounceVertical": "NO"
+		},
+		"navigationBarBackgroundColor": "#ffffff",
+		"navigationBarTitleText": "我的资产管理",
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "white",
+		"mp-weixin":{
+		  
+		}
+		
+	},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": []
+	},	
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/index.png",
+				"selectedIconPath": "static/tabbar/index_cur.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/chart/chart",
+				"iconPath": "static/tabbar/chart.png",
+				"selectedIconPath": "static/tabbar/chart_cur.png",
+				"text": "报表"
+			},
+			{
+				"pagePath": "pages/login/login",
+				"iconPath": "static/tabbar/about.png",
+				"selectedIconPath": "static/tabbar/about_cur.png",
+				"text": "我的"
+			}
+		]
+	}
+}
