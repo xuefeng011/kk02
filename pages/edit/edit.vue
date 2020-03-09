@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-white" :isBack="true">
+		<cu-custom bgColor="light bg-blue" :isBack="true">
 			<block slot="backText"><text class="">返回</text></block>
 			<block slot="content">{{item.name}}</block>
 		</cu-custom>
@@ -29,12 +29,14 @@
 					<view class="content">Modal标题</view>
 					<view class="action" @tap="hideModal"><text class="cuIcon-close text-red"></text></view>
 				</view> -->
-				<view class="padding-xl bg-white">
+				
+				<view class="padding-xl"><form>
 					<view class="cu-form-group text-xxl">
 						<view class="title">输入{{account.subtitle}}：</view>
-						<input class="text-xxl text-price" name="input" type="digit" v-model.number="editmoney" :placeholder="`请输入当前${account.subtitle}`" />
-					</view>
+						<input class="text-xxl text-price" focus  name="input" type="digit" v-model.number="editmoney" :placeholder="`请输入当前${account.subtitle}`" />
+					</view></form>
 				</view>
+				
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-green text-green" @tap="hideModal">取消</button>
@@ -52,9 +54,16 @@
 		</view>
 		<view class="cu-list menu" >
 			<view class="cu-item" v-for="item in hisList" :key="item._id">
-				<view class="content">
-					<text class="text-gray">更新{{account.subtitle}}为：</text>
-					<text class="text-grey text-price">{{item.money}}</text></view>
+				<view class="content flex row">
+					<view class="text-gray">{{account.subtitle}}更新为：</view>
+					
+					<view class="change flex row">
+						<text class="text-grey text-price">{{item.money}}</text>
+						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-red" v-if="item.change>0">+{{item.change}}</text>
+						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-grey" v-else-if="item.change==0">--</text>
+						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-green" v-else>-{{item.change}}</text>
+					</view>
+				</view>
 				<view class="action"><text class="text-grey text-sm">{{item.date}}</text></view>
 			</view>
 			
@@ -64,7 +73,7 @@
 			<view class="action flex-sub" style="border-right:2px solid #eee;" @click="handleEditAccount">
 				<text class="text-grey">编辑</text>
 			</view>
-			<view class="action flex-sub">
+			<view class="action flex-sub" @click="handleDelAccount">
 				<text class="text-grey">删除资产</text>
 			</view>
 		</view>
@@ -74,7 +83,7 @@
 
 <script>
 import accounts from '../../utils/index.js';
-
+import {orderBy}  from '../../utils/common.js'
 import { mapActions } from 'vuex';
 
 export default {
@@ -91,7 +100,7 @@ export default {
 				type: 0,
 				_id: ''
 			},
-			editmoney: 0,
+			editmoney: "",
 			hisList:[]
 		};
 	},
@@ -114,17 +123,18 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['ApiSaveAccount','ApiGetHisData','ApiInsertHisData']),
+		...mapActions(['ApiSaveAccount','ApiGetHisData','ApiDelAccount']),
 		handleShowUpdatePrice() {
 			this.showModal = true;
 		},
 		async handleUpdatePrice() {
 			console.log('提交', this.editmoney);
-			if (isNaN(Number(this.editmoney))) {
+			if (this.editmoney=="" || isNaN(Number(this.editmoney))) {
 				uni.showModal({
 					title: '金额不正确',
 					success() {}
 				});
+				return 
 			} else {
 				this.item.money = this.editmoney;
 			}
@@ -151,11 +161,37 @@ export default {
 			  	limit: 99
 			  
 		  })
-		  console.error("his11",res)
-		  this.hisList=res;
+		  
+		  this.hisList=orderBy(res,'createAt','desc');
 		},
 		handleEditAccount(){
 			this.gotoEdit(this.item)
+		},
+		handleDelAccount(){
+			var _this = this;
+			uni.showModal({
+				title: '确认删除?',
+				async success() {
+						console.error("succ")
+						
+						await _this.ApiDelAccount(_this.item);
+						uni.showToast({
+							icon: 'success',
+							title: '删除成功',
+							mask:true,
+							success(){
+								uni.switchTab({
+									url: '/pages/index/index'
+								})
+							}
+						});
+						
+				},
+				fail(){
+						console.error("fail")
+				}
+			});
+			
 		},
 		gotoEdit(item) {
 			
@@ -166,6 +202,11 @@ export default {
 		}
 	}
 };
-</script>
+</script >
 
-<style></style>
+<style scoped>
+	.change{
+		
+	}
+	
+</style>

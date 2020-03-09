@@ -1,6 +1,6 @@
 <template>
 <view>
-    <cu-custom bgcolor="bg-white" :isBack="true">
+    <cu-custom bgColor="light bg-blue" :isBack="true">
         <block slot="backText">返回</block>
         <block slot="content">添加资产</block>
     </cu-custom>

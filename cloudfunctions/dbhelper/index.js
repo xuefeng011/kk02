@@ -63,6 +63,7 @@ exports.main = async (event, context) => {
 				})
 			}
 			return await targetDB.where(event.condition)
+			  .orderBy(event.sortfield||'_id', event.sorttype||'desc')
 				.skip(20 * event.skip)
 				.limit(event.limit)
 				.get()

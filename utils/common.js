@@ -17,6 +17,26 @@ function uuid() {
 
 }
 
+   function diffday(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式  
+        var dateSpan,
+            tempDate,
+            iDays;
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+        dateSpan = sDate2 - sDate1;
+        dateSpan = Math.abs(dateSpan);
+        iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+        return iDays
+    };
+
+ function delay(timer) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, timer)
+  })
+}
+
 function sum(arr, field) {
 	if (isArray(arr) && arr.length > 0) {
 		// if (arr[0].hasOwnProperty(field)) {
@@ -35,7 +55,7 @@ function sum(arr, field) {
 		// 	console.error("common/sum array has  no field", arr, field)
 
 	} else {
-		console.error("common/sum array is not array", arr, field)
+	
 	}
 	return 0
 }
@@ -115,5 +135,8 @@ export {
 	uuid,
 	sum,
 	formatDate,
-	calcData
+	calcData,
+	delay,
+	orderBy,
+	diffday
 }

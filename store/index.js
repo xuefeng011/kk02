@@ -13,7 +13,8 @@ hasopenid = false;
 
 const KKDBHIS = "kkhis"
 const KKDB = 'kkmas'
-const KKLOG = "kklog"
+const KKDBLOG = "kklog"
+const KKDBCHART = "kkchart"
 
 import defaultdata from '../utils/defaultdata.js'
 import accounts from '../utils/index.js'
@@ -37,6 +38,7 @@ const store = new Vuex.Store({
 			"zongzichan": 0,
 			"jingzichan": 0,
 			"fuzhai": 0,
+			"isadmin":false,
 			"details": []
 		}
 	},
@@ -82,7 +84,9 @@ const store = new Vuex.Store({
 		}, data) {
 			commit("login", data)
 			await dispatch("ApiGetMainData");
-			await dispatch("ApiInsertLoginData", data)
+			await dispatch("ApiInsertLoginData", Object.assign(data, {
+				logtype: "login"
+			}))
 			return;
 		},
 		async ApiGetMainData({
@@ -170,7 +174,7 @@ const store = new Vuex.Store({
 			})
 			return getDb({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
-				db: KKLOG, //指定操作的数据表,
+				db: KKDBLOG, //指定操作的数据表,
 				hasopenid: hasopenid,
 				condition: {},
 				data: data
@@ -189,18 +193,28 @@ const store = new Vuex.Store({
 			dispatch
 		}, data) {
 			console.error("apiaddaccount", data, state.mainData)
+			let oramoney = 0;
+			const money = data.money;
+			const oraMainData = state.mainData;
 			let account = accounts.filter(p => p.type == data.type)[0]
 			if (state.mainData.details && state.mainData.details.length > 0) {
 				// 有参与记录
 				console.log("有参与记录")
 				let typeitem = state.mainData.details.filter(p => p.type == data.type);
 
-				if (typeitem.length > 0 && !!typeitem[0].details && typeitem[0].details.length > 0) {
+				if (typeitem.length > 0) {
 					// 有过该类型记录
+					console.log("有过该类型记录")
+					if (typeitem[0].details == undefined || typeitem[0].details == null) {
+						typeitem[0].details = []
+					}
 					let q = typeitem[0].details.filter(p => p._id == data._id)
 					if (q.length > 0) {
+						oramoney = q[0].money;
+						data.change = money - oramoney
 						Object.assign(q[0], data);
 					} else {
+						data.change = money - oramoney
 						typeitem[0].details.push(data);
 					}
 
@@ -208,6 +222,7 @@ const store = new Vuex.Store({
 				} else {
 					//未有该类型记录
 					console.log("//未有该类型记录")
+					data.change = money - oramoney
 					let tempitem = Object.assign({}, account, {
 						_total: 0,
 						details: [
@@ -225,8 +240,8 @@ const store = new Vuex.Store({
 					condition: {
 
 					},
-					needrefresh: false,
 					data: Object.assign({}, data, {
+						isdel: false,
 						rid: data._id,
 						createAt: formatDate(now),
 						createAt2: now,
@@ -237,6 +252,45 @@ const store = new Vuex.Store({
 					})
 				})
 
+
+				await dispatch("ApiSaveChartData", {
+					condition: {
+						date: formatDate(now, 'yyyy-MM-dd')
+					},
+					skip: 0,
+					limit: 100,
+					data: Object.assign({}, {
+						jingzichan: state.mainData.jingzichan,
+						fuzhai: state.mainData.fuzhai,
+						zongzichan: state.mainData.zongzichan,
+						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
+						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
+						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						details: state.mainData.details.map(p => {
+							return {
+								type: p.type,
+								name: p.name,
+								total: p._total,
+								cnt: !p.details ? 0 : p.details.length
+							}
+						}),
+						createAt: formatDate(now),
+						createAt2: now,
+						date: formatDate(now, 'yyyy-MM-dd'),
+						day: formatDate(now, 'dd'),
+						year: formatDate(now, 'yyyy'),
+						month: formatDate(now, 'MM')
+					})
+				})
+
+				await dispatch("ApiInsertLoginData", Object.assign({}, {
+					logtype: "update",
+					nickName: state.userInfo.nickName
+				}))
+				Object.assign(state.mainData, {
+					updateAt: formatDate(now),
+					updateAt2: now
+				})
 				return await dispatch("ApiUpdateMainData", {
 					condition: {},
 					needrefresh: false,
@@ -248,6 +302,7 @@ const store = new Vuex.Store({
 			} else {
 				// 没有任何记录
 				console.log("//没有任何记录")
+				data.change = money - oramoney
 				let tempitem = Object.assign({}, account, {
 					_total: 0,
 					details: [
@@ -269,13 +324,12 @@ const store = new Vuex.Store({
 
 
 				const now = new Date();
-				console.error(1)
 				await dispatch("ApiInsertHisData", {
 					condition: {
 
 					},
-					needrefresh: false,
 					data: Object.assign({}, data, {
+						isdel: false,
 						rid: data._id,
 						createAt: formatDate(now),
 						createAt2: now,
@@ -285,7 +339,46 @@ const store = new Vuex.Store({
 						month: formatDate(now, 'MM')
 					})
 				})
-				console.error(2)
+
+				await dispatch("ApiSaveChartData", {
+					condition: {
+						date: formatDate(now, 'yyyy-MM-dd')
+					},
+					skip: 0,
+					limit: 100,
+					data: Object.assign({}, {
+						jingzichan: state.mainData.jingzichan,
+						fuzhai: state.mainData.fuzhai,
+						zongzichan: state.mainData.zongzichan,
+						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
+						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
+						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						details: state.mainData.details.map(p => {
+							return {
+								type: p.type,
+								name: p.name,
+								total: p._total,
+								cnt: !p.details ? 0 : p.details.length
+							}
+						}),
+						createAt: formatDate(now),
+						createAt2: now,
+						date: formatDate(now, 'yyyy-MM-dd'),
+						day: formatDate(now, 'dd'),
+						year: formatDate(now, 'yyyy'),
+						month: formatDate(now, 'MM')
+					})
+				})
+				await dispatch("ApiInsertLoginData", Object.assign({}, {
+					logtype: "create",
+					nickName: state.userInfo.nickName
+				}))
+				Object.assign(state.mainData, {
+					createAt: formatDate(now),
+					createAt2: now,
+					updateAt: formatDate(now),
+					updateAt2: now
+				})
 				return await dispatch("ApiInsertMainData", {
 					condition: {},
 					needrefresh: false,
@@ -296,12 +389,108 @@ const store = new Vuex.Store({
 			}
 
 		},
+		async ApiDelAccount({
+			commit,
+			state,
+			dispatch
+		}, data) {
+			console.error("apidelaccount", data, state.mainData)
+			const oraMainData = state.mainData;
+			let account = accounts.filter(p => p.type == data.type)[0]
+			if (state.mainData.details && state.mainData.details.length > 0) {
+				// 有参与记录
+				console.log("有参与记录")
+				let typeitem = state.mainData.details.filter(p => p.type == data.type);
+
+				if (typeitem.length > 0 && !!typeitem[0].details && typeitem[0].details.length > 0) {
+					// 有过该类型记录
+					let q = typeitem[0].details.findIndex(p => p._id == data._id)
+					if (q > -1) {
+
+						typeitem[0].details.splice(q, 1)
+
+					} else {
+						return
+					}
+
+
+				} else {
+					return
+				}
+				console.log("更新数据", state.mainData)
+
+				state.mainData = calcData(state.mainData)
+
+				const now = new Date();
+				await dispatch("ApiInsertHisData", {
+					condition: {
+
+					},
+					needrefresh: false,
+					data: Object.assign({}, data, {
+						isdel: true,
+						money: 0,
+						rid: data._id,
+						createAt: formatDate(now),
+						createAt2: now,
+						date: formatDate(now, 'yyyy-MM-dd'),
+						day: formatDate(now, 'dd'),
+						year: formatDate(now, 'yyyy'),
+						month: formatDate(now, 'MM')
+					})
+				})
+
+				await dispatch("ApiSaveChartData", {
+					condition: {
+						date: formatDate(now, 'yyyy-MM-dd')
+					},
+					skip: 0,
+					limit: 100,
+					data: Object.assign({}, {
+						jingzichan: state.mainData.jingzichan,
+						fuzhai: state.mainData.fuzhai,
+						zongzichan: state.mainData.zongzichan,
+						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
+						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
+						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						details: state.mainData.details.map(p => {
+							return {
+								type: p.type,
+								name: p.name,
+								total: p._total,
+								cnt: !p.details ? 0 : p.details.length
+							}
+						}),
+						createAt: formatDate(now),
+						createAt2: now,
+						date: formatDate(now, 'yyyy-MM-dd'),
+						day: formatDate(now, 'dd'),
+						year: formatDate(now, 'yyyy'),
+						month: formatDate(now, 'MM')
+					})
+				})
+				Object.assign(state.mainData, {
+					updateAt: formatDate(now),
+					updateAt2: now
+				})
+
+				return await dispatch("ApiUpdateMainData", {
+					condition: {},
+					needrefresh: false,
+					data: state.mainData
+				})
+
+
+
+			} else {
+				return
+			}
+		},
 		async ApiGetHisData({
 			commit,
 			state
 		}, data) {
-			// return [44]
-			// return new Promise((resolve, reject) => {
+
 			return getDb({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBHIS, //指定操作的数据表,
@@ -313,25 +502,21 @@ const store = new Vuex.Store({
 				data: { //指定insert的数据
 				}
 			}).then(res => {
-				// console.error(11111,res,'get his')
 				return res;
 			}).catch(error => {
 				console.warn("getDb error", error)
 				return [];
 			})
-
-			// })
-			// console.error("xxx")
-			// return [677]
 		},
 		async ApiInsertHisData({
 			commit,
 			state
 		}, data) {
-			// return new Promise((resolve, reject) => {
+			const now = new Date();
 			delete data.data._id
 			Object.assign(data, {
-				createAt: new Date()
+				createAt: formatDate(now),
+				createAt2: now
 			})
 			return getDb({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
@@ -346,9 +531,116 @@ const store = new Vuex.Store({
 				console.warn("getDb error", error)
 				return;
 			})
-			// })
-		}
-	}
-})
+		},
+		async ApiGetChartData({
+			commit,
+			state
+		}, data) {
 
+			return getDb({
+				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+				db: KKDBCHART, //指定操作的数据表,
+				hasopenid: hasopenid,
+				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
+				condition: data.condition,
+				skip: data.skip,
+				limit: data.limit,
+				data: { //指定insert的数据
+				}
+			}).then(res => {
+				return res;
+			}).catch(error => {
+				console.warn("getDb error", error)
+				return [];
+			})
+		},
+		async ApiSaveChartData({
+			commit,
+			state
+		}, data) {
+			const now = new Date();
+			Object.assign(data, {
+				updateAt: formatDate(now),
+				updateAt2: now
+			})
+
+			return getDb({
+				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+				db: KKDBCHART, //指定操作的数据表,
+				hasopenid: hasopenid,
+				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
+				condition: data.condition,
+				skip: data.skip,
+				limit: data.limit,
+				data: { //指定insert的数据
+				}
+			}).then(async res => {
+
+				if (res.length <= 0) {
+
+					return getDb({
+						type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+						db: KKDBCHART, //指定操作的数据表,
+						hasopenid: hasopenid,
+						condition: data.condition,
+						data: data.data
+					}).then(async res => {
+
+						return true;
+
+					}).catch(error => {
+						console.warn("getDb error", error)
+						return;
+					})
+				} else {
+
+					return getDb({
+						type: "update", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+						db: KKDBCHART, //指定操作的数据表,
+						hasopenid: hasopenid,
+						condition: data.condition,
+						data: data.data
+					}).then(async res => {
+
+						return true;
+
+					}).catch(error => {
+						console.warn("getDb error", error)
+						return;
+					})
+				}
+
+			}).catch(error => {
+				console.warn("getDb error", error)
+				return false
+			})
+
+		},
+		async ApiGetLogData({
+			commit,
+			state
+		}, data) {
+
+			return getDb({
+				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
+				db: KKDBLOG, //指定操作的数据表,
+				hasopenid: hasopenid,
+				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
+				condition: data.condition,
+				skip: data.skip,
+				limit: data.limit,
+				data: { //指定insert的数据
+				}
+			}).then(res => {
+				return res;
+			}).catch(error => {
+				console.warn("getDb error", error)
+				return [];
+			})
+		}
+
+	}
+
+
+});
 export default store
