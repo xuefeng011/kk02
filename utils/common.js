@@ -21,13 +21,17 @@ function uuid() {
         var dateSpan,
             tempDate,
             iDays;
-        sDate1 = Date.parse(sDate1);
-        sDate2 = Date.parse(sDate2);
+        sDate1 = Date.parse(paseDate(sDate1));
+        sDate2 = Date.parse(paseDate(sDate2));
         dateSpan = sDate2 - sDate1;
         dateSpan = Math.abs(dateSpan);
         iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
         return iDays
     };
+	
+	function paseDate(str){
+		return str.replace(/-/gi, '/')
+	}
 
  function delay(timer) {
   return new Promise(resolve => {

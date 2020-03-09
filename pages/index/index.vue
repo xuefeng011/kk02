@@ -48,7 +48,7 @@
 			</view>
 		</view>
 		<view class="padding">
-			<view class="flex flex-direction"><button class="cu-btn light bg-blue margin-tb-sm lg" @click="handleAddAccount">添加</button></view>
+			<view class="flex flex-direction"><button class="cu-btn bg-white margin-tb-sm lg" @click="handleAddAccount">添加</button></view>
 		</view>
 	</view>
 </template>

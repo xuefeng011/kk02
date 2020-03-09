@@ -23,8 +23,8 @@
 			<view class="acion"><button class="cu-btn margin-right-sm bg-yellow text-white" @click="handleShowUpdatePrice">更新余额</button></view>
 		</view>
 
-		<view class="cu-modal" :class="showModal ? 'show' : ''">
-			<view class="cu-dialog">
+		<view class="cu-modal" v-if="showModal" :class="showModal ? 'show' : ''">
+			<view class="cu-dialog" style="margin-top: -25%;">
 				<!-- <view class="cu-bar bg-white justify-end">
 					<view class="content">Modal标题</view>
 					<view class="action" @tap="hideModal"><text class="cuIcon-close text-red"></text></view>

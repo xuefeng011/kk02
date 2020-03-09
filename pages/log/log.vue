@@ -33,13 +33,14 @@
 			</view>
 		</view>
 		<view class="cu-bar foot flex text-center row bg-white">
-			<view class="action flex-sub" style="border-right:2px solid #eee;" @click="handlePre">
+			<view class="action flex-sub" @click="handlePre">
 				<text class="text-grey">上一页</text>
 			</view>
 			<view class="action">
 				<text class="text-grey text-lg">
 					<{{(pageindex+1)}}>
 				</text>
+				
 			</view>
 			<view class="action flex-sub" @click="handleNext">
 				<text class="text-grey">下一页</text>

@@ -16,7 +16,6 @@ const KKDB = 'kkmas'
 const KKDBLOG = "kklog"
 const KKDBCHART = "kkchart"
 
-import defaultdata from '../utils/defaultdata.js'
 import accounts from '../utils/index.js'
 
 import {

@@ -71,7 +71,7 @@
 </template>
 
 <script>
-	import defaultdata from '../../utils/defaultdata.js';
+	
 
 	import {
 		diffday
