@@ -6,12 +6,12 @@
 			<block slot="content">我的资产</block>
 		</cu-custom>
 
-		<view class="cu-chat title-bg padding-sm text-center solid-bottom">
-			<view class="basis-df border padding-bottom-sm text-xxl">
+		<view class="cu-chat title-bg text-center">
+			<view class="basis-df border-bottom padding-bottom-sm text-xxl">
 				<view class="text-white text-sm">净资产</view>
 				<view class="text-price">{{ mainData.jingzichan }}</view>
 			</view>
-			<view class="flex text-xl">
+			<view class="flex text-xl padding-bottom-sm">
 				<view class="basis-df border text-center">
 					<view class="text-white text-sm padding-bottom-sm">资产</view>
 					<view class="text-price">{{ mainData.zongzichan }}</view>
@@ -86,6 +86,18 @@
 
 		},
 		onLoad: function() {
+			
+			// #ifdef MP-ALIPAY
+				
+			my.setNavigationBar({
+				reset: true,
+				backgroundColor: '#fe0000',
+				title: "空空资产管家"
+			});
+			// #endif
+			
+			
+			
 			let acc = []
 			accounts.map((p, i) => {
 				acc[i + 1] = p

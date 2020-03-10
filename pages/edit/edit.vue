@@ -35,7 +35,7 @@
 					<form>
 						<view class="cu-form-group text-xxl">
 							<view class="title">输入{{account.subtitle}}：</view>
-							<input class="text-xxl text-price" focus name="input" type="digit" v-model.number="editmoney" :placeholder="`请输入当前${account.subtitle}`" />
+							<input style="line-height: 0;" class="text-xxl text-price" focus name="input" type="digit" v-model.number="editmoney" :placeholder="`请输入当前${account.subtitle}`" />
 						</view>
 					</form>
 				</view>
@@ -112,7 +112,19 @@
 			};
 		},
 		async onLoad(option) {
+
+
 			const item = JSON.parse(decodeURIComponent(option.item));
+
+
+			// #ifdef MP-ALIPAY
+
+			my.setNavigationBar({
+				reset: true,
+				backgroundColor: '#fe0000',
+				title: this.item.name
+			});
+			// #endif
 
 			console.warn('item', item);
 

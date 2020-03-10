@@ -34,6 +34,7 @@
 			"style": { "enablePullDownRefresh": false}
 		}
 	    
+        
     ],
 	"globalStyle": {
 		"mp-alipay": {
@@ -41,9 +42,10 @@
 			/* 支付宝小程序特有相关 */
 			"transparentTitle": "always",
 			"allowsBounceVertical": "NO"
+			
 		},
 		"navigationBarBackgroundColor": "#ffffff",
-		"navigationBarTitleText": "我的资产管理",
+		"navigationBarTitleText": "空空资产管家",
 		"navigationStyle": "custom",
 		"navigationBarTextStyle": "white",
 		"mp-weixin":{

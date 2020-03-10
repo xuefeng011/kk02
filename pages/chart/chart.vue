@@ -5,7 +5,7 @@
 			<block slot="homeText"></block>
 			<block slot="content">报表</block>
 		</cu-custom>
-		<view class="solids-bottom padding-xs flex align-center" v-if="!hasLogin || !hasdata">
+		<view class="solids-bottom flex align-center" v-if="!hasLogin || !hasdata">
 			
 			<view class="flex-sub text-center">
 				<view class="solid-bottom text-xsl padding">
@@ -31,7 +31,7 @@
 		<view class="detailbox">
 			<view class="piecharts">
 				<!--#ifdef MP-ALIPAY -->
-				<canvas canvas-id="canvasRing" id="canvasRing" class="charts" :style="{'width':cWidth2*pixelRatio+'px','height':cHeight2*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}"
+				<canvas canvas-id="canvasRing" id="canvasRing" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}"
 				 @touchstart="touchRing"></canvas>
 				<!--#endif-->
 				<!--#ifndef MP-ALIPAY -->
@@ -80,6 +80,17 @@
 		onLoad() {
 			_self = this;
 			console.error("chart onload")
+			
+			// #ifdef MP-ALIPAY
+	
+			my.setNavigationBar({
+				reset: true,
+				backgroundColor: '#fe0000',
+				title: "报表"
+			});
+			// #endif
+			
+			
 			let _this = this;
 			//#ifdef MP-ALIPAY
 			uni.getSystemInfo({
@@ -95,8 +106,8 @@
 			this.cWidth = uni.upx2px(750);
 			this.cHeight = uni.upx2px(500);
 
-			this.cWidth2 = uni.upx2px(400);
-			this.cHeight2 = uni.upx2px(300);
+			this.cWidth2 = uni.upx2px(750);
+			this.cHeight2 = uni.upx2px(500);
 
 			console.error("chart onload 2")
 
@@ -380,8 +391,8 @@
 	}
 
 	.piecharts {
-		width: 400upx;
-		height: 300upx;
+		width: 750upx;
+		height: 500upx;
 		background-color: #FFFFFF;
 	}
 

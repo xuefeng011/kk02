@@ -32,12 +32,14 @@ import {
 const store = new Vuex.Store({
 	state: {
 		hasLogin: false,
-		userInfo: {},
+		userInfo: {
+			openid: ""
+		},
 		mainData: {
 			"zongzichan": 0,
 			"jingzichan": 0,
 			"fuzhai": 0,
-			"isadmin":false,
+			"isadmin": false,
 			"details": []
 		}
 	},
@@ -51,7 +53,7 @@ const store = new Vuex.Store({
 				hasdb: true
 			})
 
-			console.warn("mutation setMainData", state.mainData.fuzhai)
+			// console.warn("mutation setMainData", state.mainData.fuzhai)
 		},
 		login(state, provider) {
 			console.log("mutation login", provider)
@@ -101,6 +103,7 @@ const store = new Vuex.Store({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
 				condition: {},
 				skip: 0,
@@ -108,10 +111,12 @@ const store = new Vuex.Store({
 				data: { //指定insert的数据
 				}
 			}).then(res => {
+				// console.error("ApiGetMainData",res)
 				if (res.length > 0) {
 					commit("setMainData", res[0])
+				} else {
+					return true
 				}
-				return true
 			}).catch(error => {
 				console.warn("getDb error", error)
 				return;
@@ -127,6 +132,7 @@ const store = new Vuex.Store({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				condition: data.condition,
 				data: data.data
 			}).then(async res => {
@@ -150,6 +156,7 @@ const store = new Vuex.Store({
 				type: "update", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDB, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				condition: data.condition,
 				data: data.data
 			}).then(async res => {
@@ -167,14 +174,26 @@ const store = new Vuex.Store({
 			state
 		}, data) {
 			const now = new Date();
+
+			let env = "none"
+			// #ifdef MP-ALIPAY
+			env = "alipay"
+			// #endif
+
+			// #ifdef MP-WEIXIN
+			env = "weixin"
+			// #endif
+
 			Object.assign(data, {
 				createAt: formatDate(now),
-				createAt2: now
+				createAt2: now,
+				env
 			})
 			return getDb({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBLOG, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				condition: {},
 				data: data
 			}).then(async res => {
@@ -494,6 +513,7 @@ const store = new Vuex.Store({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBHIS, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
 				condition: data.condition,
 				skip: data.skip,
@@ -521,6 +541,7 @@ const store = new Vuex.Store({
 				type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBHIS, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				condition: data.condition,
 				data: data.data
 			}).then(async res => {
@@ -540,6 +561,7 @@ const store = new Vuex.Store({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBCHART, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
 				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
 				condition: data.condition,
 				skip: data.skip,
@@ -567,6 +589,8 @@ const store = new Vuex.Store({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBCHART, //指定操作的数据表,
 				hasopenid: hasopenid,
+				openid: state.userInfo.openid,
+				openid: state.userInfo.openid,
 				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
 				condition: data.condition,
 				skip: data.skip,
@@ -581,6 +605,7 @@ const store = new Vuex.Store({
 						type: "insert", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 						db: KKDBCHART, //指定操作的数据表,
 						hasopenid: hasopenid,
+						openid: state.userInfo.openid,
 						condition: data.condition,
 						data: data.data
 					}).then(async res => {
@@ -597,6 +622,7 @@ const store = new Vuex.Store({
 						type: "update", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 						db: KKDBCHART, //指定操作的数据表,
 						hasopenid: hasopenid,
+						openid: state.userInfo.openid,
 						condition: data.condition,
 						data: data.data
 					}).then(async res => {
@@ -623,7 +649,8 @@ const store = new Vuex.Store({
 			return getDb({
 				type: "get", //指定操作是insert/update:indexKey/get:condition,skip,limit/delete:condition
 				db: KKDBLOG, //指定操作的数据表,
-				hasopenid: hasopenid,
+				hasopenid: false,
+				openid: state.userInfo.openid,
 				// indexKey:"1583457636830_0.08382568433942894_33575134-1583457639546_8_27177",
 				condition: data.condition,
 				skip: data.skip,

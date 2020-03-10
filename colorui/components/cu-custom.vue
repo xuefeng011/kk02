@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<!-- #ifndef MP-ALIPAY -->
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
 			<view class="cu-bar fixed" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
 				<view class="action">
@@ -18,6 +19,14 @@
 				<slot name="right"></slot>
 			</view>
 		</view>
+		<!-- #endif -->
+		<!-- #ifdef MP-ALIPAY -->
+		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
+			<view class="cu-bar fixed" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
+				
+			</view>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 

@@ -3,7 +3,9 @@
 	import {
 		mapActions
 	} from 'vuex';
-
+	import {
+		loginMp,loginAlipay
+	} from './utils/loginhelper.js'
 	export default {
 		onLaunch: function() {
 			// console.error("App onLaunch")
@@ -37,16 +39,60 @@
 			uni.getSetting({
 				async success(res) {
 					console.log("getsettings", res)
-					if (res.authSetting['scope.userInfo']) {
-						wx.getUserInfo({
+					if (res.authSetting['scope.userInfo'] || res.authSetting['userInfo']) {
+						console.log("res.authSetting getsettings1")
+						// #ifdef MP-ALIPAY
+						my.getOpenUserInfo({
+							fail: (res) => {},
+							success: async (res) => {
+								console.error("getOpenUserInfo", res)
+						
+								let userInfo = JSON.parse(res.response).response // 以下方的报文格式解析两层 response  
+						
+								loginAlipay().then(async openid => {
+									console.log("openid succ", openid)
+									Object.assign(userInfo, {
+										openid
+									})
+								
+									return await _this.ApiLogin(userInfo);
+								
+								}).catch(error => {
+									console.log("openid error", error)
+								})
+						
+							}
+						});
+						// #endif
+
+						// #ifndef MP-ALIPAY
+						uni.getUserInfo({
+							"withCredentials": true,
 							async success(res) {
-								// console.log("App OnLaunch 用户已授权登录",res.userInfo)
+								console.log("App OnLaunch 用户已授权登录 getUserInfo withCredentials", res.userInfo)
 								// //用户已经授权过
 								// console.log("app launch haslogin")
 								// _this.$store.commit("login", res.userInfo)
-								await _this.ApiLogin(res.userInfo);
+
+								loginMp().then(async openid => {
+									console.log("openid succ", openid)
+									Object.assign(res.userInfo, {
+										openid
+									})
+
+									return await _this.ApiLogin(res.userInfo);
+
+								}).catch(error => {
+									console.log("openid error", error)
+								})
+
+
+
 							}
 						})
+						// #endif
+
+
 					} else {
 						await _this.ApiLogin({
 							nickName: ""
@@ -69,14 +115,31 @@
 
 
 
-			if (!wx.cloud) {
-				console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+
+
+
+
+			if (!uniCloud) {
+				console.error('uniCloud 云能力 不支持')
 			} else {
-				console.info('云能力 初始化')
-				wx.cloud.init({
-					env: 'kkenv-uptx1',
-					traceUser: true,
-				})
+				console.info('uniCloud 云能力 初始化')
+				// #ifdef MP-WEIXIN
+				// console.info('uniCloud 云能力 wx')
+				// uniCloud.init({
+				// 	env: 'kkenv-uptx1',
+				// 	traceUser: true,
+				// })
+				// #endif
+
+
+				console.info('uniCloud 云能力 alipay')
+				uniCloud.init({
+					provider: 'aliyun',
+					spaceId: '8d40765c-350f-4d9d-8a9c-6a5e00448a4a',
+					clientSecret: 'TqZDuijTqF232XbXPJI/xg=='
+				});
+
+
 			}
 
 
@@ -89,8 +152,9 @@
 			console.error('App onLoad')
 		},
 		methods: {
-			...mapActions(['ApiLogin']),
-		},
+			...mapActions(['ApiLogin'])
+
+		}
 
 	}
 </script>
