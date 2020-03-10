@@ -70,11 +70,16 @@
 
 			// #ifdef MP-ALIPAY
 
-			my.setNavigationBar({
+			uni.setNavigationBar({
 				reset: true,
 				backgroundColor: '#fe0000',
+				frontColor:"#ffffff",
 				title: "编辑资产"
 			});
+			uni.setNavigationBarColor({
+				backgroundColor: '#fe0000',
+				frontColor:"#ffffff"
+			})
 			// #endif
 
 			console.warn("item", item)

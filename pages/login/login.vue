@@ -153,11 +153,16 @@
 		onLoad: function() {
 			// #ifdef MP-ALIPAY
 
-			my.setNavigationBar({
+			uni.setNavigationBar({
 				reset: true,
 				backgroundColor: '#fe0000',
+				frontColor:"#ffffff",
 				title: '我的',
 			});
+			uni.setNavigationBarColor({
+				backgroundColor: '#fe0000',
+				frontColor:"#ffffff"
+			})
 			// #endif
 		},
 		methods: {

@@ -83,11 +83,16 @@
 			
 			// #ifdef MP-ALIPAY
 	
-			my.setNavigationBar({
+			uni.setNavigationBar({
 				reset: true,
 				backgroundColor: '#fe0000',
+				frontColor:"#ffffff",
 				title: "报表"
 			});
+			uni.setNavigationBarColor({
+				backgroundColor: '#fe0000',
+				frontColor:"#ffffff"
+			})
 			// #endif
 			
 			

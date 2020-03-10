@@ -119,11 +119,16 @@
 
 			// #ifdef MP-ALIPAY
 
-			my.setNavigationBar({
+			uni.setNavigationBar({
 				reset: true,
 				backgroundColor: '#fe0000',
-				title: this.item.name
+				frontColor:"#ffffff",
+				title: item.name
 			});
+			uni.setNavigationBarColor({
+				backgroundColor: '#fe0000',
+				frontColor:"#ffffff"
+			})
 			// #endif
 
 			console.warn('item', item);
