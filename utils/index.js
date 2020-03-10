@@ -77,7 +77,7 @@ const accounts = [{
 		"subtitle":"金额",
 		"desc": "股票、基金、P2P",
 		"selects": {
-			"title": "",
+			"title": "选择投资账户",
 			"list": [
 				"股票",
 				"基金",

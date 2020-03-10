@@ -1,22 +1,23 @@
 <template>
 	<view>
-		<cu-custom bgColor="light bg-blue text-black" :isBack="false">
-			<block slot="backText">返回</block>
+		<cu-custom bgColor="title-bg" :isBack="false" :isHome="false">
+			<block slot="backText"></block>
+			<block slot="homeText"></block>
 			<block slot="content">我的资产</block>
 		</cu-custom>
 
-		<view class="cu-chat light bg-blue text-black padding-sm text-center solid-bottom">
+		<view class="cu-chat title-bg padding-sm text-center solid-bottom">
 			<view class="basis-df border padding-bottom-sm text-xxl">
-				<view class="text-gray text-sm">净资产</view>
+				<view class="text-white text-sm">净资产</view>
 				<view class="text-price">{{ mainData.jingzichan }}</view>
 			</view>
 			<view class="flex text-xl">
 				<view class="basis-df border text-center">
-					<view class="text-gray text-sm padding-bottom-sm">资产</view>
+					<view class="text-white text-sm padding-bottom-sm">资产</view>
 					<view class="text-price">{{ mainData.zongzichan }}</view>
 				</view>
 				<view class="basis-df text-center solid-left">
-					<view class="text-gray text-sm padding-bottom-sm">负债</view>
+					<view class="text-white text-sm padding-bottom-sm">负债</view>
 					<view class="text-price">{{ mainData.fuzhai }}</view>
 				</view>
 			</view>
@@ -48,7 +49,11 @@
 			</view>
 		</view>
 		<view class="padding">
-			<view class="flex flex-direction"><button class="cu-btn bg-white margin-tb-sm lg" @click="handleAddAccount">添加</button></view>
+			<view class="flex flex-direction">
+				<!-- <button class="cu-btn bg-white margin-tb-sm lg" @click="handleAddAccount">添加</button> -->
+				<button class="cu-btn block line-orange lg" @click="handleAddAccount">
+								<text class="cuIcon-add margin-right-sm"></text> 添加</button>
+				</view>
 		</view>
 	</view>
 </template>

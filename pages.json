@@ -3,30 +3,35 @@
 		 {
 			"path": "pages/index/index",
 			"style": {
-				 "enablePullDownRefresh": true
+				 "enablePullDownRefresh": true,
+				  "backgroundColor": "#f1f1f1"
 			}
 		},{
 			"path": "pages/log/log",
 			"style": {
-				 "enablePullDownRefresh": true
+				 "enablePullDownRefresh": true,
+				  "backgroundColor": "#f1f1f1"
 			}
 		}, {
 			"path": "pages/chart/chart",
 			"style": {
-				 "enablePullDownRefresh": true
+				 "enablePullDownRefresh": true,
+				 "backgroundColor": "#f1f1f1"
 			}
 		},{
 			"path": "pages/login/login",
-			"style": {}
+			"style": {
+				 "enablePullDownRefresh": false
+			}
 		}, {
 			"path": "pages/edit/edit",
-			"style": {}
+			"style": { "enablePullDownRefresh": false}
 		}, {
 			"path": "pages/edit/addaccount",
-			"style": {}
+			"style": { "enablePullDownRefresh": false}
 		}, {
 			"path": "pages/edit/editaccount",
-			"style": {}
+			"style": { "enablePullDownRefresh": false}
 		}
 	    
     ],

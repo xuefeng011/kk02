@@ -1,7 +1,8 @@
 <template>
 	<view>
-		<cu-custom bgColor="light bg-blue" :isBack="false">
-			<block slot="backText">返回</block>
+		<cu-custom bgColor="title-bg" :isBack="false" :isHome="true">
+			<block slot="backText"></block>
+			<block slot="homeText"></block>
 			<block slot="content">我的</block>
 		</cu-custom>
 

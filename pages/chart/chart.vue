@@ -1,9 +1,20 @@
 <template>
 	<view>
-		<cu-custom bgColor="light bg-blue" :isBack="true">
-			<block slot="backText">返回</block>
+		<cu-custom bgColor="title-bg" :isBack="false" :isHome="true">
+			<block slot="backText"></block>
+			<block slot="homeText"></block>
 			<block slot="content">报表</block>
 		</cu-custom>
+		<view class="solids-bottom padding-xs flex align-center" v-if="!hasLogin || !hasdata">
+			
+			<view class="flex-sub text-center">
+				<view class="solid-bottom text-xsl padding">
+					<text class="cuIcon-roundclose text-red"></text>
+				</view>
+				<view class="padding text-gray">暂无数据</view>
+			</view>
+		</view>
+
 
 		<view class="linecharts">
 			<!--#ifdef MP-ALIPAY -->
@@ -54,7 +65,7 @@
 
 	export default {
 		computed: {
-			...mapState(['hasLogin', 'userInfo'])
+			...mapState(['hasLogin', 'userInfo', 'mainData'])
 		},
 		components: {},
 		onLaunch: function() {},
@@ -99,7 +110,8 @@
 				cHeight: '',
 				cHeight2: '',
 				pixelRatio: 1,
-				chartlist: []
+				chartlist: [],
+				hasdata:false
 			};
 		},
 		methods: {
@@ -122,9 +134,8 @@
 			},
 			async getData() {
 				console.error("getData")
-				
-				if (!this.hasLogin)
-				{
+
+				if (!this.hasLogin) {
 					return;
 				}
 				let _this = this;
@@ -137,8 +148,10 @@
 				});
 
 				if (list.length <= 0) {
+					this.hasdata=false;
 					return
 				}
+				this.hasdata=true;
 				list = orderBy(list, 'date', 'asc')
 				// console.error("xx", list)
 				let result = {}
@@ -174,7 +187,7 @@
 				console.error("result", result);
 
 				_this.showLineA("canvasLineA", result);
-				_this.showDetails(list[list.length-1]["date"])
+				_this.showDetails(list[list.length - 1]["date"])
 
 			},
 			showLineA(canvasId, chartData) {

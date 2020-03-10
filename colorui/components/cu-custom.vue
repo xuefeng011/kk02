@@ -2,9 +2,15 @@
 	<view>
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
 			<view class="cu-bar fixed" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
-				<view class="action" @tap="BackPage" v-if="isBack">
-					<text class="cuIcon-back"></text>
-					<slot name="backText"></slot>
+				<view class="action">
+					<view class="action" @tap="BackPage" v-if="isBack">
+						<text class="cuIcon-back"></text>
+						<slot name="backText"></slot>
+					</view>
+					<view class="action" @tap="BackHome" v-if="isHome">
+						<text class="cuIcon-home"></text>
+						<slot name="homeText"></slot>
+					</view>
 				</view>
 				<view class="content" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
@@ -45,6 +51,10 @@
 				type: [Boolean, String],
 				default: false
 			},
+			isHome: {
+				type: [Boolean, String],
+				default: false
+			},
 			bgImage: {
 				type: String,
 				default: ''
@@ -55,6 +65,11 @@
 				uni.navigateBack({
 					delta: 1
 				});
+			},
+			BackHome() {
+				uni.switchTab({
+					url:'/pages/index/index'
+				})
 			}
 		}
 	}

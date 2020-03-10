@@ -15,7 +15,7 @@ exports.main = async (event, context) => {
 
 	let _openid = wxContext.OPENID;
 	let hasopenid = event.hasopenid;
-	console.error("db start", event, _openid)
+	console.log("db start", event, _openid)
 
 	const targetDB = db.collection(event.db)
 	try {

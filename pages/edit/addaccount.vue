@@ -1,7 +1,8 @@
 <template>
 <view>
-    <cu-custom bgColor="light bg-blue" :isBack="true">
-        <block slot="backText">返回</block>
+    <cu-custom bgColor="title-bg" :isBack="true" :isHome="false">
+    	<block slot="backText"></block>
+    	<block slot="homeText"></block>
         <block slot="content">添加资产</block>
     </cu-custom>
 
@@ -20,16 +21,18 @@
 
     <view class="cu-modal drawer-modal justify-end" :class="modalName=='DrawerModalR'?'show':''" @tap="hideModal">
         <view class="cu-dialog basis-lg" @tap.stop :style="[{top:CustomBar+'px',height:'calc(100vh - ' + CustomBar + 'px)'}]">
-            <view class="cu-list menu text-left">
+           <scroll-view scroll-y class="DrawerWindow" :style="[{height:'calc(100vh - ' + CustomBar + 'px)'}]">
+			   <view class="cu-list menu text-left">
                 <view class="cu-item">
                     <view class="text-grey">{{title}}</view>
                 </view>
                 <view class="cu-item arrow" v-for="(item,index) in selects" :key="index">
                     <view class="content" @click="handleAddNewAccountModal(item)">
-                        <view>{{item}}</view>
+                        <view class="">{{item}}</view>
                     </view>
                 </view>
             </view>
+			</scroll-view> 
         </view>
     </view>
 </view>
@@ -102,5 +105,21 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+	.DrawerWindow{
+		position: absolute;
+		width: 85vw;
+		height: 100vh;
+		left: 0;
+		top: 0;
+	
+		transition: all 0.4s;
+		
+		transform: scale(0.9, 0.9);
+		box-shadow: 0 0 60upx rgba(0, 0, 0, 0.2);
+		transform-origin: 0;
+		transform: scale(1, 1) translateX(0%);
+		opacity: 1;
+		pointer-events: all;
+	}
 </style>

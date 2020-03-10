@@ -1,10 +1,10 @@
 <template>
 	<view>
-		<cu-custom bgColor="light bg-blue" :isBack="true">
-			<block slot="backText"><text class="">返回</text></block>
+		<cu-custom bgColor="title-bg" :isBack="true" :isHome="true">
+			<block slot="backText"></block>
+			<block slot="homeText"></block>
 			<block slot="content">日志</block>
 		</cu-custom>
-
 		<view class="cu-bar bg-white solid-bottom margin-top">
 			<view class="action">
 				<text class="cuIcon-title text-orange"></text>
