@@ -42,9 +42,9 @@
 				<view class="action"><button class="cu-btn round line-cyan margin-right-sm" v-if="item.logtype=='update'">{{item.logtype}}</button></view>
 				<view class="content flex flex-direction">
 					<view class="text-gray">{{item.createAt}}</view>
-					<view class="text-gray text-sm">{{item._openid}}</view>
+					<view class="text-gray text-sm text-cut" style="width:200upx;">{{item._openid}}</view>
 				</view>
-				<view class="action"><text class="text-grey text-sm">{{item.nickName||'未登录'}}</text></view>
+				<view class="action"><text class="text-grey text-sm margin-right-sm">{{item.nickName||'未登录'}}</text></view>
 			</view>
 			<view class="cu-item" v-if="dataList.length===0">
 				<view class="action"><text class="text-grey text-sm">暂无数据...</text></view>
@@ -134,7 +134,7 @@
 
 				let res = await this.ApiGetLogData({
 					condition: condition,
-					limit: 5,
+					limit: 7,
 					skip: this.pageindex
 				})
 
