@@ -1,11 +1,12 @@
 <template>
 	<view>
+		<ShowTips />
 		<cu-custom bgColor="title-bg" :isBack="false" :isHome="false">
 			<block slot="backText"></block>
 			<block slot="homeText"></block>
 			<block slot="content">我的资产</block>
 		</cu-custom>
-
+		
 		<view class="cu-chat title-bg text-center">
 			<view class="basis-df border-bottom padding-bottom-sm text-xxl">
 				<view class="text-white text-sm">净资产</view>
@@ -69,12 +70,16 @@
 	import {
 		delay
 	} from '../../utils/common.js'
-
+	
+	import ShowTips from "@/components/show-tips/show-tips.vue"
+	
 	export default {
 		computed: {
 			...mapState(['hasLogin', 'userInfo', 'mainData'])
 		},
-		components: {},
+		components: {
+			ShowTips
+		},
 		onLaunch: function() {
 
 		},

@@ -21,6 +21,13 @@ export default {
                 const value = uni.getStorageSync('launchFlag');
                 if (value) {
                     if (value == true) {
+						
+						uni.setStorage({
+						    key: 'tipshow',
+						    data: true
+						});
+						
+						
                         uni.switchTab({
                             url: '/pages/index/index'
                         });

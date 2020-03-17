@@ -60,6 +60,7 @@ export default {
                 key: 'launchFlag',
                 data: true
             });
+			
             uni.switchTab({
                 url: '/pages/index/index'
             });
