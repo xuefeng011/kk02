@@ -153,7 +153,7 @@
 			},
 			async handleUpdatePrice() {
 				console.log('提交', this.editmoney);
-				if (this.editmoney == "" || isNaN(Number(this.editmoney))) {
+				if (this.editmoney === "" || isNaN(Number(this.editmoney))) {
 					uni.showModal({
 						title: '金额不正确',
 						success() {}
@@ -162,15 +162,17 @@
 				} else {
 					this.item.money = this.editmoney;
 				}
+				this.showModal = false;
 				uni.showLoading({
-					mask: true
+					mask: true,
+					title:"更新中..."
 				});
 				await this.ApiSaveAccount(this.item);
 				await this.getHistoryList()
 				uni.hideLoading();
 
 				this.editmoney = 0;
-				this.showModal = false;
+				
 			},
 			hideModal() {
 				this.showModal = false;

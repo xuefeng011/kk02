@@ -5,7 +5,7 @@
 			<block slot="homeText"></block>
 			<block slot="content">报表</block>
 		</cu-custom>
-		<view class="solids-bottom flex align-center" v-if="!hasLogin || !hasdata">
+		<view class="solids-bottom flex align-center" v-if="!hasLogin && !hasdata">
 			
 			<view class="flex-sub text-center">
 				<view class="solid-bottom text-xsl padding">
@@ -155,6 +155,12 @@
 					return;
 				}
 				let _this = this;
+				
+				uni.showLoading({
+					mask: true,
+					title:"加载中..."
+				});
+				
 				let list = await this.ApiGetChartData({
 					condition: {
 
@@ -162,7 +168,8 @@
 					skip: 0,
 					limit: 100
 				});
-
+				
+				uni.hideLoading()
 				if (list.length <= 0) {
 					this.hasdata=false;
 					return

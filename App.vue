@@ -79,8 +79,17 @@
 									Object.assign(res.userInfo, {
 										openid
 									})
-
-									return await _this.ApiLogin(res.userInfo);
+									
+									uni.showLoading({
+										mask: true,
+										title:"加载中..."
+									});
+									
+									let resultx= await _this.ApiLogin(res.userInfo);
+									
+									uni.hideLoading()
+									
+									return resultx;
 
 								}).catch(error => {
 									console.log("openid error", error)
@@ -291,4 +300,14 @@
 			transform: translateY(0px);
 		}
 	}
+	
+
+.title-bg{
+	color:#ffffff;
+	
+	background-color: #fe0000;
+	
+	
+	 /* background-color: #eee; */
+}
 </style>

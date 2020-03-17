@@ -82,7 +82,7 @@
 			</view>
 			<view class="cu-item">
 				<button class="cu-btn content">
-					<text class="text-grey">当前版本 1.0.1</text>
+					<text class="text-grey">当前版本 1.0.3</text>
 				</button>
 			</view>
 		</view>

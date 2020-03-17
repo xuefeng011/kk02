@@ -25,7 +25,8 @@ import {
 
 import {
 	calcData,
-	formatDate
+	formatDate,
+	toDecimal
 } from '../utils/common.js'
 
 
@@ -229,10 +230,10 @@ const store = new Vuex.Store({
 					let q = typeitem[0].details.filter(p => p._id == data._id)
 					if (q.length > 0) {
 						oramoney = q[0].money;
-						data.change = money - oramoney
+						data.change = toDecimal(money - oramoney)
 						Object.assign(q[0], data);
 					} else {
-						data.change = money - oramoney
+						data.change =  toDecimal(money - oramoney)
 						typeitem[0].details.push(data);
 					}
 
@@ -240,7 +241,7 @@ const store = new Vuex.Store({
 				} else {
 					//未有该类型记录
 					console.log("//未有该类型记录")
-					data.change = money - oramoney
+					data.change =  toDecimal(money - oramoney)
 					let tempitem = Object.assign({}, account, {
 						_total: 0,
 						details: [
@@ -281,9 +282,9 @@ const store = new Vuex.Store({
 						jingzichan: state.mainData.jingzichan,
 						fuzhai: state.mainData.fuzhai,
 						zongzichan: state.mainData.zongzichan,
-						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
-						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
-						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						chgjingzichan: toDecimal(state.mainData.jingzichan - oraMainData.jingzichan),
+						chgfuzhai: toDecimal(state.mainData.fuzhai - oraMainData.fuzhai),
+						chgzongzichan: toDecimal(state.mainData.zongzichan - oraMainData.zongzichan),
 						details: state.mainData.details.map(p => {
 							return {
 								type: p.type,
@@ -368,9 +369,9 @@ const store = new Vuex.Store({
 						jingzichan: state.mainData.jingzichan,
 						fuzhai: state.mainData.fuzhai,
 						zongzichan: state.mainData.zongzichan,
-						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
-						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
-						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						chgjingzichan: toDecimal(state.mainData.jingzichan - oraMainData.jingzichan),
+						chgfuzhai: toDecimal(state.mainData.fuzhai - oraMainData.fuzhai),
+						chgzongzichan:toDecimal( state.mainData.zongzichan - oraMainData.zongzichan),
 						details: state.mainData.details.map(p => {
 							return {
 								type: p.type,
@@ -468,9 +469,9 @@ const store = new Vuex.Store({
 						jingzichan: state.mainData.jingzichan,
 						fuzhai: state.mainData.fuzhai,
 						zongzichan: state.mainData.zongzichan,
-						chgjingzichan: state.mainData.jingzichan - oraMainData.jingzichan,
-						chgfuzhai: state.mainData.fuzhai - oraMainData.fuzhai,
-						chgzongzichan: state.mainData.zongzichan - oraMainData.zongzichan,
+						chgjingzichan:toDecimal( state.mainData.jingzichan - oraMainData.jingzichan),
+						chgfuzhai: toDecimal(state.mainData.fuzhai - oraMainData.fuzhai),
+						chgzongzichan:toDecimal( state.mainData.zongzichan - oraMainData.zongzichan),
 						details: state.mainData.details.map(p => {
 							return {
 								type: p.type,
