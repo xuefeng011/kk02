@@ -18,10 +18,19 @@ const KKDBCHART = "kkchart"
 
 import accounts from '../utils/index.js'
 
+// #ifdef MP-WEIXIN
+import {
+	getDb
+} from '../utils/dbhelperwx.js'
+
+// #endif
+
+// #ifndef MP-WEIXIN
 import {
 	getDb
 } from '../utils/dbhelper.js'
 
+// #endif
 
 import {
 	calcData,

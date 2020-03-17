@@ -4,7 +4,8 @@
 		mapActions
 	} from 'vuex';
 	import {
-		loginMp,loginAlipay
+		loginMp,
+		loginAlipay
 	} from './utils/loginhelper.js'
 	export default {
 		onLaunch: function() {
@@ -46,21 +47,21 @@
 							fail: (res) => {},
 							success: async (res) => {
 								console.error("getOpenUserInfo", res)
-						
+
 								let userInfo = JSON.parse(res.response).response // 以下方的报文格式解析两层 response  
-						
+
 								loginAlipay().then(async openid => {
 									console.log("openid succ", openid)
 									Object.assign(userInfo, {
 										openid
 									})
-								
+
 									return await _this.ApiLogin(userInfo);
-								
+
 								}).catch(error => {
 									console.log("openid error", error)
 								})
-						
+
 							}
 						});
 						// #endif
@@ -79,16 +80,16 @@
 									Object.assign(res.userInfo, {
 										openid
 									})
-									
+
 									uni.showLoading({
 										mask: true,
-										title:"加载中..."
+										title: "加载中..."
 									});
-									
-									let resultx= await _this.ApiLogin(res.userInfo);
-									
+
+									let resultx = await _this.ApiLogin(res.userInfo);
+
 									uni.hideLoading()
-									
+
 									return resultx;
 
 								}).catch(error => {
@@ -126,31 +127,30 @@
 
 
 
+			// #ifdef MP-WEIXIN
+			if (!wx.cloud) {
+				console.error('wx.cloud 云能力 不支持')
+			} else {
+				console.info('wx.cloud 云能力 wx')
+				wx.cloud.init({
+					env: 'kkenv-uptx1',
+					traceUser: true,
+				})
+			}
+			// #endif
 
-
+			// #ifndef MP-WEIXIN
 			if (!uniCloud) {
 				console.error('uniCloud 云能力 不支持')
 			} else {
-				console.info('uniCloud 云能力 初始化')
-				// #ifdef MP-WEIXIN
-				// console.info('uniCloud 云能力 wx')
-				// uniCloud.init({
-				// 	env: 'kkenv-uptx1',
-				// 	traceUser: true,
-				// })
-				// #endif
-
-
 				console.info('uniCloud 云能力 alipay')
 				uniCloud.init({
 					provider: 'aliyun',
 					spaceId: '8d40765c-350f-4d9d-8a9c-6a5e00448a4a',
 					clientSecret: 'TqZDuijTqF232XbXPJI/xg=='
 				});
-
-
 			}
-
+			// #endif
 
 
 		},
@@ -300,14 +300,14 @@
 			transform: translateY(0px);
 		}
 	}
-	
 
-.title-bg{
-	color:#ffffff;
-	
-	background-color: #fe0000;
-	
-	
-	 /* background-color: #eee; */
-}
+
+	.title-bg {
+		color: #ffffff;
+
+		background-color: #fe0000;
+
+
+		/* background-color: #eee; */
+	}
 </style>
