@@ -145,6 +145,8 @@ function toDecimal(x) {
 	return f;
 }
 
+const templateId="LVZtYVpD-jHHLbSI8M3_fG3a3cwlWF2F5Axg_Y02B-Q"
+
 export {
 	uuid,
 	sum,
@@ -153,5 +155,6 @@ export {
 	delay,
 	orderBy,
 	diffday,
-	toDecimal
+	toDecimal,
+	templateId
 }

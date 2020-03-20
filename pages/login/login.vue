@@ -80,6 +80,20 @@
 					<text class="text-grey">查看日志</text>
 				</button>
 			</view>
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="cu-item" v-if="hasLogin">
+				<view class="content padding-tb-sm" @click="handleShowSubModel">
+					<view>
+						<text class="cuIcon-time text-blue margin-right-xs"></text>按时提醒</view>
+					<view class="text-gray text-sm" v-if="mainData.subdesc">
+						<text class="cuIcon-infofill margin-right-xs"></text> {{mainData.subdesc}}</view>
+				</view>
+				<view class="action" @click="handleShowSubModel">
+					<switch class="switch-blue skin" :checked="mainData.issub" disabled></switch>
+				</view>
+			</view>
+			<!-- #endif -->
+
 			<view class="cu-item">
 				<button class="cu-btn content">
 					<text class="text-grey">当前版本 1.0.3</text>
@@ -87,13 +101,26 @@
 			</view>
 		</view>
 
+		<lb-picker ref="picker" v-model="selectPicker" mode="multiSelector" :list="list" :level="2" @change="handleChange"
+		 @confirm="handleConfirm" @cancle="handleCancle">
+			<view slot="confirm-text">
+				<text class="text-blue text-lg">确认设置</text>
+			</view>
+			<view slot="action-center">
+				<text class="text-red text-lg" @click="handleGuanbi">取消提醒</text>
+			</view>
+		</lb-picker>
+
+
+
 
 	</view>
 </template>
 
 <script>
 	import {
-		diffday
+		diffday,
+		templateId
 	} from '../../utils/common.js'
 
 	import {
@@ -107,6 +134,9 @@
 		mapActions,
 		mapMutations
 	} from 'vuex';
+
+
+
 	export default {
 		computed: { ...mapState(['hasLogin', 'userInfo', 'mainData']),
 			cnt() {
@@ -147,7 +177,162 @@
 		data() {
 			return {
 				openid: '',
-				huoyuedu: 0
+				huoyuedu: 0,
+				selectPicker: [],
+
+				list: [{
+						label: '每周',
+						value: '1',
+						children: [{
+								label: '周一',
+								value: '1',
+							},
+							{
+								label: '周二',
+								value: '2',
+							},
+							{
+								label: '周三',
+								value: '3',
+							},
+							{
+								label: '周四',
+								value: '4',
+							},
+							{
+								label: '周五',
+								value: '5',
+							},
+							{
+								label: '周六',
+								value: '6',
+							},
+							{
+								label: '周日',
+								value: '7',
+							},
+						]
+					},
+					{
+						label: '每月',
+						value: '2',
+						children: [{
+								label: '1日',
+								value: '1'
+							},
+							{
+								label: '2日',
+								value: '2'
+							},
+							{
+								label: '3日',
+								value: '3'
+							},
+							{
+								label: '4日',
+								value: '4'
+							},
+							{
+								label: '5日',
+								value: '5'
+							},
+							{
+								label: '6日',
+								value: '6'
+							},
+							{
+								label: '7日',
+								value: '7'
+							},
+							{
+								label: '8日',
+								value: '8'
+							},
+							{
+								label: '9日',
+								value: '9'
+							},
+							{
+								label: '10日',
+								value: '10'
+							},
+							{
+								label: '11日',
+								value: '11'
+							},
+							{
+								label: '12日',
+								value: '12'
+							},
+							{
+								label: '13日',
+								value: '13'
+							},
+							{
+								label: '14日',
+								value: '14'
+							},
+							{
+								label: '15日',
+								value: '15'
+							},
+							{
+								label: '16日',
+								value: '16'
+							},
+							{
+								label: '17日',
+								value: '17'
+							},
+							{
+								label: '18日',
+								value: '18'
+							},
+							{
+								label: '19日',
+								value: '19'
+							},
+							{
+								label: '20日',
+								value: '20'
+							},
+							{
+								label: '21日',
+								value: '21'
+							},
+							{
+								label: '22日',
+								value: '22'
+							},
+							{
+								label: '23日',
+								value: '23'
+							},
+							{
+								label: '24日',
+								value: '24'
+							},
+							{
+								label: '25日',
+								value: '25'
+							},
+							{
+								label: '26日',
+								value: '26'
+							},
+							{
+								label: '27日',
+								value: '27'
+							},
+							{
+								label: '28日',
+								value: '28'
+							}
+						]
+					},
+
+				]
+
 			};
 		},
 		onLoad: function() {
@@ -156,14 +341,16 @@
 			uni.setNavigationBar({
 				reset: true,
 				backgroundColor: '#fe0000',
-				frontColor:"#ffffff",
+				frontColor: "#ffffff",
 				title: '我的',
 			});
 			uni.setNavigationBarColor({
 				backgroundColor: '#fe0000',
-				frontColor:"#ffffff"
+				frontColor: "#ffffff"
 			})
 			// #endif
+
+
 		},
 		onShareAppMessage: function(options) {
 			var that = this;
@@ -188,7 +375,7 @@
 			return shareObj;
 		},
 		methods: {
-			...mapActions(['ApiLogin']),
+			...mapActions(['ApiLogin', 'ApiSaveSubs']),
 			async getuserinfo(e) {
 				if (e.detail.userInfo) {
 					let userinfo = e.detail.userInfo;
@@ -270,8 +457,159 @@
 				uni.navigateTo({
 					url: `../log/log`
 				});
+			},
+			handleShowSubModel() {
+				this.$refs["picker"].show()
+			},
+			subsMessage({
+				desc,
+				k1,
+				k2
+			}) {
+				let _this = this;
+				wx.requestSubscribeMessage({
+					tmplIds: [templateId],
+					success(res) {
+						//开发文档文档详细对的说明，接口调用返回的结果是什么
+						//https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
+						if (res.errMsg === 'requestSubscribeMessage:ok') {
+							wx.cloud
+								.callFunction({
+									//通过调用云函数，实现用户点击允许我们发送订阅消息，
+									//将该数据订阅保存到数据库，以便在满足条件的时候发送给用户
+									name: 'subscribeMessage',
+									data: {
+										type: "sub",
+										data: {
+											k1:k1,
+											k2:k2,
+											desc:desc
+										},
+										templateId: templateId,
+										//这个是给用户发送订阅消息后，用户点击订阅消息进入小程序的相关页面，一定要是在线的才可以
+										page: 'pages/index/index',
+									},
+								})
+								.then(async () => {
+
+									await _this.ApiSaveSubs({
+										"issub": true,
+										"subdesc": desc,
+									})
+
+									wx.showToast({
+										title: '订阅成功',
+										icon: 'success',
+										duration: 2000,
+									});
+
+
+									_this.$refs["picker"].hide()
+								})
+								.catch((e) => {
+									wx.showToast({
+										title: '订阅失败',
+										icon: 'success',
+										duration: 2000,
+									});
+								});
+						}
+					},
+					fail() {
+						wx.showToast({
+							title: '订阅失败',
+							icon: 'success',
+							duration: 2000,
+						});
+					}
+				})
+
+			},
+			sendMessage() {
+				wx.cloud.callFunction({
+					name: 'subscribeMessage',
+					data: {
+						type: "send",
+					},
+					success(res) {
+						wx.showToast({
+							title: '设置成功',
+							icon: 'success',
+							duration: 2000,
+						});
+						console.log(res)
+					},
+					fail(re) {
+						console.log(re)
+					}
+				})
+
+			},
+			async handleConfirm({
+				item,
+				value
+			}) {
+				console.log("handleConfirm", item, value)
+
+
+
+				let a1 = item[0]["label"];
+				let a2 = item[1]["label"];
+
+
+				let k1 = item[0]["value"];
+				let k2 = item[1]["value"];
+
+				return this.subsMessage({
+					desc: `${a1}${a2}`,
+					k1: k1,
+					k2: k2
+				})
+
+
+
+			},
+			handleCancle() {
+				this.issub = false
+			},
+			handleChange() {
+
+			},
+			async handleGuanbi() {
+				var _this = this;
+				console.log("handleGuanbi")
+
+
+				uni.showModal({
+					title: '确认取消 按时提醒功能?',
+					async success(e) {
+						console.error("succ", e)
+						if (e.confirm) {
+							await _this.ApiSaveSubs({
+								"issub": false,
+								"subdesc": "",
+							})
+							wx.showToast({
+								title: '取消成功',
+								icon: 'success',
+								duration: 2000,
+							});
+							_this.$refs["picker"].hide()
+						}
+
+					},
+					fail() {
+						console.error("fail")
+
+					}
+				});
+
+
+
 			}
+
 		}
+
 	};
 </script>
 

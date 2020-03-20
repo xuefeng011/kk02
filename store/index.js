@@ -50,6 +50,8 @@ const store = new Vuex.Store({
 			"jingzichan": 0,
 			"fuzhai": 0,
 			"isadmin": false,
+			"issub":false,
+			"subdesc":"",
 			"details": []
 		}
 	},
@@ -215,6 +217,22 @@ const store = new Vuex.Store({
 			})
 
 		},
+		async ApiSaveSubs({
+			commit,
+			state,
+			dispatch
+		}, data) {
+			let now = new Date();
+			Object.assign(state.mainData, {
+				updateAt: formatDate(now),
+				updateAt2: now
+			},data)
+			return await dispatch("ApiUpdateMainData", {
+				condition: {},
+				needrefresh: false,
+				data: state.mainData
+			})
+		},
 		async ApiSaveAccount({
 			commit,
 			state,
@@ -242,7 +260,7 @@ const store = new Vuex.Store({
 						data.change = toDecimal(money - oramoney)
 						Object.assign(q[0], data);
 					} else {
-						data.change =  toDecimal(money - oramoney)
+						data.change = toDecimal(money - oramoney)
 						typeitem[0].details.push(data);
 					}
 
@@ -250,7 +268,7 @@ const store = new Vuex.Store({
 				} else {
 					//未有该类型记录
 					console.log("//未有该类型记录")
-					data.change =  toDecimal(money - oramoney)
+					data.change = toDecimal(money - oramoney)
 					let tempitem = Object.assign({}, account, {
 						_total: 0,
 						details: [
@@ -380,7 +398,7 @@ const store = new Vuex.Store({
 						zongzichan: state.mainData.zongzichan,
 						chgjingzichan: toDecimal(state.mainData.jingzichan - oraMainData.jingzichan),
 						chgfuzhai: toDecimal(state.mainData.fuzhai - oraMainData.fuzhai),
-						chgzongzichan:toDecimal( state.mainData.zongzichan - oraMainData.zongzichan),
+						chgzongzichan: toDecimal(state.mainData.zongzichan - oraMainData.zongzichan),
 						details: state.mainData.details.map(p => {
 							return {
 								type: p.type,
@@ -478,9 +496,9 @@ const store = new Vuex.Store({
 						jingzichan: state.mainData.jingzichan,
 						fuzhai: state.mainData.fuzhai,
 						zongzichan: state.mainData.zongzichan,
-						chgjingzichan:toDecimal( state.mainData.jingzichan - oraMainData.jingzichan),
+						chgjingzichan: toDecimal(state.mainData.jingzichan - oraMainData.jingzichan),
 						chgfuzhai: toDecimal(state.mainData.fuzhai - oraMainData.fuzhai),
-						chgzongzichan:toDecimal( state.mainData.zongzichan - oraMainData.zongzichan),
+						chgzongzichan: toDecimal(state.mainData.zongzichan - oraMainData.zongzichan),
 						details: state.mainData.details.map(p => {
 							return {
 								type: p.type,
