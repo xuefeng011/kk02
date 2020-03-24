@@ -64,7 +64,7 @@
 						<text class="text-grey text-price">{{item.money}}</text>
 						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-red" v-if="item.change>0">+{{item.change}}</text>
 						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-grey" v-else-if="item.change==0">--</text>
-						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-green" v-else>-{{item.change}}</text>
+						<text style="margin-top:-5upx;" class="text-xs text-price margin-left-sm text-green" v-else>{{item.change}}</text>
 					</view>
 				</view>
 				<view class="action"><text class="text-grey text-sm">{{item.date}}</text></view>
