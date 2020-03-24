@@ -96,7 +96,7 @@
 
 			<view class="cu-item">
 				<button class="cu-btn content">
-					<text class="text-grey">当前版本 1.0.3</text>
+					<text class="text-grey">当前版本 1.0.5</text>
 				</button>
 			</view>
 		</view>
@@ -330,6 +330,107 @@
 							}
 						]
 					},
+					{
+						label: '每日',
+						value: '3',
+						children: [{
+								label: '0:00',
+								value: '0'
+							},
+							{
+								label: '1:00',
+								value: '1'
+							},
+							{
+								label: '2:00',
+								value: '2'
+							},
+							{
+								label: '3:00',
+								value: '3'
+							},
+							{
+								label: '4:00',
+								value: '4'
+							},
+							{
+								label: '5:00',
+								value: '5'
+							},
+							{
+								label: '6:00',
+								value: '6'
+							},
+							{
+								label: '7:00',
+								value: '7'
+							},
+							{
+								label: '8:00',
+								value: '8'
+							},
+							{
+								label: '9:00',
+								value: '9'
+							},
+							{
+								label: '10:00',
+								value: '10'
+							},
+							{
+								label: '11:00',
+								value: '11'
+							},
+							{
+								label: '12:00',
+								value: '12'
+							},
+							{
+								label: '13:00',
+								value: '13'
+							},
+							{
+								label: '14:00',
+								value: '14'
+							},
+							{
+								label: '15:00',
+								value: '15'
+							},
+							{
+								label: '16:00',
+								value: '16'
+							},
+							{
+								label: '17:00',
+								value: '17'
+							},
+							{
+								label: '18:00',
+								value: '18'
+							},
+							{
+								label: '19:00',
+								value: '19'
+							},
+							{
+								label: '20:00',
+								value: '20'
+							},
+							{
+								label: '21:00',
+								value: '21'
+							},
+							{
+								label: '22:00',
+								value: '22'
+							},
+							{
+								label: '23:00',
+								value: '23'
+							}
+						]
+					},
 
 				]
 
@@ -470,43 +571,44 @@
 				wx.requestSubscribeMessage({
 					tmplIds: [templateId],
 					success(res) {
-						//开发文档文档详细对的说明，接口调用返回的结果是什么
-						//https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
 						if (res.errMsg === 'requestSubscribeMessage:ok') {
+							wx.showLoading({
+								title: "请求中...",
+								mask: true
+							})
 							wx.cloud
 								.callFunction({
-									//通过调用云函数，实现用户点击允许我们发送订阅消息，
-									//将该数据订阅保存到数据库，以便在满足条件的时候发送给用户
 									name: 'subscribeMessage',
 									data: {
 										type: "sub",
 										data: {
-											k1:k1,
-											k2:k2,
-											desc:desc
+											k1: k1,
+											k2: k2,
+											desc: desc
 										},
 										templateId: templateId,
-										//这个是给用户发送订阅消息后，用户点击订阅消息进入小程序的相关页面，一定要是在线的才可以
 										page: 'pages/index/index',
 									},
 								})
-								.then(async () => {
-
+								.then(async (sendres) => {
+									console.log("sendres", sendres.result.days)
+									let days = sendres.result.days;
 									await _this.ApiSaveSubs({
 										"issub": true,
 										"subdesc": desc,
 									})
-
+									wx.hideLoading()
 									wx.showToast({
-										title: '订阅成功',
+										title: `订阅成功`,
 										icon: 'success',
-										duration: 2000,
+										duration: 4000,
 									});
 
 
 									_this.$refs["picker"].hide()
 								})
 								.catch((e) => {
+									wx.hideLoading()
 									wx.showToast({
 										title: '订阅失败',
 										icon: 'success',
@@ -585,16 +687,38 @@
 					async success(e) {
 						console.error("succ", e)
 						if (e.confirm) {
-							await _this.ApiSaveSubs({
-								"issub": false,
-								"subdesc": "",
-							})
-							wx.showToast({
-								title: '取消成功',
-								icon: 'success',
-								duration: 2000,
-							});
-							_this.$refs["picker"].hide()
+
+							wx.cloud
+								.callFunction({
+									name: 'subscribeMessage',
+									data: {
+										type: "sub",
+										data: {
+											k1: 0,
+											k2: 0,
+											desc: ""
+										},
+										templateId: templateId,
+										page: 'pages/index/index',
+									},
+								})
+								.then(async () => {
+
+
+									await _this.ApiSaveSubs({
+										"issub": false,
+										"subdesc": "",
+									})
+									wx.showToast({
+										title: '取消成功',
+										icon: 'success',
+										duration: 2000,
+									});
+									_this.$refs["picker"].hide()
+
+
+								})
+
 						}
 
 					},

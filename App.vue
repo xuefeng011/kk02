@@ -305,10 +305,10 @@
 	.title-bg {
 		color: #ffffff;
 
-		/* background-color: #fe0000; */
+		background-color: #fe0000;
 
 
-		background-color: #eee;
+		/* background-color: #eee; */
 	}
 	
 
